@@ -63,13 +63,13 @@ function highlightMatches($elements, query) {
    on top of the level / duration filter: it only hides cards that are
    already on the page. */
 function applyCourseSearch() {
-  const query = $('#course-search').val().trim().toLowerCase();
+  const query = $('#course-search').val().trim();
   const $columns = $('#course-list > .col').has('.card');
 
-  // .filter() keeps only the cards whose text contains the query
+  // .filter() keeps only the cards whose text contains the query (any letter case)
   const $matching = $columns.filter(function () {
     const text = $(this).find('.card-title, .card-text, .badge, .syllabus').text().toLowerCase();
-    return text.includes(query);
+    return text.includes(query.toLowerCase());
   });
 
   $columns.hide();
