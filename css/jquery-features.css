@@ -1,0 +1,343 @@
+/* ==========================================================================
+   EduSphere — styles for the jQuery features (Assignment #6)
+   Team: The Ethernet (Group SE-2510)
+
+   Linked after interactive.css on every Bootstrap page.
+
+   TABLE OF CONTENTS
+   01. Search: live filter, suggestions, highlighting   (Ramil Zhunussov)
+   02. Scroll progress bar + "back to top" ring        (Maxim Batyushkin)
+   03. Number counters, loading button                 (Maxim Batyushkin)
+   04. Toast notifications                             (Azamat Mustafin)
+   05. Copy to clipboard                               (Azamat Mustafin)
+   06. Lazy-loaded photo wall                          (Azamat Mustafin)
+   ========================================================================== */
+
+
+/* ==========================================================================
+   01. SEARCH
+   ========================================================================== */
+.search-box {
+  position: relative;
+  max-width: 34rem;
+}
+
+/* the dropdown sits right under the input and above the cards */
+.search-suggestions {
+  position: absolute;
+  top: calc(100% + 4px);
+  left: 0;
+  right: 0;
+  z-index: 1050;
+  max-height: 20rem;
+  overflow-y: auto;
+  border-radius: 0.6rem;
+  box-shadow: 0 0.75rem 1.5rem rgba(27, 28, 58, 0.18);
+}
+
+.search-suggestions .list-group-item {
+  cursor: pointer;
+}
+
+.search-suggestions .suggestion-type {
+  display: block;
+  font-size: 0.75rem;
+  color: var(--bs-secondary-color);
+}
+
+/* item chosen with the arrow keys */
+.search-suggestions .list-group-item.active {
+  background-color: var(--edu-indigo);
+  border-color: var(--edu-indigo);
+}
+
+.search-suggestions .list-group-item.active .suggestion-type {
+  color: rgba(255, 255, 255, 0.75);
+}
+
+.search-suggestions strong {
+  color: var(--edu-amber-dark);
+}
+
+.search-suggestions .active strong {
+  color: var(--edu-amber);
+}
+
+/* <mark> added around every match */
+mark.search-hit {
+  padding: 0 0.1em;
+  border-radius: 0.2em;
+  background: linear-gradient(120deg, #ffe08a, #ffc46b);
+  color: #1b1c3a;
+}
+
+.faq-item {
+  transition: opacity 0.25s ease;
+}
+
+/* questions without a match fade back while a search is active */
+.faq-item.faq-dim {
+  opacity: 0.45;
+}
+
+
+/* ==========================================================================
+   02. SCROLL PROGRESS BAR
+   The gradient is as wide as the screen (background-size: 100vw), so the
+   bar does not stretch the colours — it uncovers them one by one:
+   amber at the top of the page, pink in the middle, violet and cyan at the end.
+   ========================================================================== */
+.scroll-progress {
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 2000;
+  width: 100%;
+  height: 6px;
+  background: rgba(47, 42, 119, 0.15);
+}
+
+.scroll-progress-bar {
+  position: relative;
+  width: 0;
+  height: 100%;
+  border-radius: 0 6px 6px 0;
+  background: linear-gradient(90deg, #f2a33c, #ff5f8f 35%, #8f5cff 65%, #2fd4ff);
+  background-size: 100vw 100%;
+  box-shadow: 0 0 10px rgba(255, 95, 143, 0.7);
+}
+
+/* glowing dot at the front of the bar */
+.scroll-progress-bar::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  right: -5px;
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: #fff;
+  box-shadow: 0 0 8px 3px rgba(143, 92, 255, 0.85);
+  transform: translateY(-50%);
+}
+
+/* round badge: the ring fills with the same percentage (--progress) */
+.scroll-badge {
+  --progress: 0;
+  position: fixed;
+  right: 1.25rem;
+  bottom: 1.25rem;
+  z-index: 1040;
+  display: grid;
+  place-items: center;
+  width: 3.4rem;
+  height: 3.4rem;
+  border: 0;
+  border-radius: 50%;
+  font: 700 0.8rem/1 var(--bs-body-font-family);
+  color: var(--edu-indigo);
+  background:
+    radial-gradient(closest-side, var(--bs-body-bg) 78%, transparent 80%),
+    conic-gradient(#f2a33c, #ff5f8f, #8f5cff calc(var(--progress) * 1%), rgba(47, 42, 119, 0.15) 0);
+  box-shadow: 0 0.5rem 1.2rem rgba(27, 28, 58, 0.25);
+  opacity: 0;
+  transform: translateY(1rem);
+  pointer-events: none;
+  transition: opacity 0.3s ease, transform 0.3s ease;
+}
+
+.scroll-badge.visible {
+  opacity: 1;
+  transform: none;
+  pointer-events: auto;
+}
+
+.scroll-badge:hover .scroll-badge-text {
+  display: none;
+}
+
+.scroll-badge:hover::after {
+  content: "↑";
+  font-size: 1.3rem;
+}
+
+html[data-bs-theme="dark"] .scroll-badge {
+  color: #c9c6ff;
+}
+
+
+/* ==========================================================================
+   03. COUNTERS AND LOADING BUTTON
+   ========================================================================== */
+.counter {
+  font-variant-numeric: tabular-nums;   /* digits keep the same width while counting */
+}
+
+.stat-card {
+  border-top: 4px solid var(--edu-amber);
+}
+
+/* a disabled button that is "loading" should not look greyed out */
+.btn[aria-busy="true"] {
+  opacity: 0.9;
+  cursor: progress;
+}
+
+
+/* ==========================================================================
+   04. TOAST NOTIFICATIONS
+   ========================================================================== */
+.toast-stack {
+  position: fixed;
+  right: 1rem;
+  bottom: 5.5rem;              /* above the "back to top" badge */
+  z-index: 2100;
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+  width: min(22rem, calc(100vw - 2rem));
+}
+
+.edu-toast {
+  position: relative;
+  display: flex;
+  align-items: flex-start;
+  gap: 0.6rem;
+  padding: 0.8rem 2.4rem 0.9rem 0.9rem;
+  overflow: hidden;
+  border-left: 5px solid var(--toast-colour);
+  border-radius: 0.6rem;
+  background: var(--bs-body-bg);
+  color: var(--bs-body-color);
+  box-shadow: 0 0.75rem 1.75rem rgba(27, 28, 58, 0.25);
+}
+
+.edu-toast > .bi {
+  font-size: 1.2rem;
+  line-height: 1.2;
+  color: var(--toast-colour);
+}
+
+.edu-toast-success { --toast-colour: #1f9d61; }
+.edu-toast-info    { --toast-colour: var(--edu-indigo-light); }
+.edu-toast-warning { --toast-colour: var(--edu-amber-dark); }
+
+.edu-toast-close {
+  position: absolute;
+  top: 0.35rem;
+  right: 0.5rem;
+  border: 0;
+  background: none;
+  font-size: 1.3rem;
+  line-height: 1;
+  color: var(--bs-secondary-color);
+}
+
+/* thin line at the bottom that shrinks while the toast is on screen */
+.edu-toast-timer {
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  width: 100%;
+  height: 3px;
+  background: var(--toast-colour);
+}
+
+html[data-bs-theme="dark"] .edu-toast {
+  background: #24224d;
+}
+
+
+/* ==========================================================================
+   05. COPY TO CLIPBOARD
+   ========================================================================== */
+.copy-btn {
+  position: relative;
+  flex-shrink: 0;
+}
+
+.copy-btn.copied {
+  --bs-btn-color: #fff;
+  --bs-btn-bg: #1f9d61;
+  --bs-btn-border-color: #1f9d61;
+  --bs-btn-hover-color: #fff;
+  --bs-btn-hover-bg: #1f9d61;
+  --bs-btn-hover-border-color: #1f9d61;
+}
+
+/* small dark bubble with an arrow, above the button */
+.copy-tooltip {
+  position: absolute;
+  bottom: calc(100% + 8px);
+  right: 0;
+  padding: 0.3rem 0.6rem;
+  border-radius: 0.4rem;
+  background: #1b1c3a;
+  color: #fff;
+  font-size: 0.75rem;
+  white-space: nowrap;
+  pointer-events: none;
+}
+
+.copy-tooltip::after {
+  content: "";
+  position: absolute;
+  top: 100%;
+  right: 1rem;
+  border: 6px solid transparent;
+  border-top-color: #1b1c3a;
+}
+
+.promo-code {
+  padding: 0.2rem 0.5rem;
+  border: 2px dashed var(--edu-amber);
+  border-radius: 0.4rem;
+  font: 700 1rem/1.4 "SFMono-Regular", Menlo, Consolas, monospace;
+  letter-spacing: 0.08em;
+}
+
+
+/* ==========================================================================
+   06. LAZY-LOADED PHOTO WALL
+   Before loading, the frame shows a moving shimmer; the real image fades in.
+   ========================================================================== */
+.lazy-frame {
+  aspect-ratio: 4 / 3;
+  overflow: hidden;
+  border-radius: 0.75rem;
+  background: linear-gradient(100deg, #e9e8f7 30%, #f7f6ff 50%, #e9e8f7 70%);
+  background-size: 300% 100%;
+  animation: shimmer 1.4s linear infinite;
+}
+
+html[data-bs-theme="dark"] .lazy-frame {
+  background-image: linear-gradient(100deg, #1e1c45 30%, #2a2860 50%, #1e1c45 70%);
+}
+
+.lazy-frame.is-loaded {
+  animation: none;
+}
+
+.lazy-frame img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  opacity: 0;
+  transform: scale(1.04);
+  transition: opacity 0.6s ease, transform 0.6s ease;
+}
+
+.lazy-frame.is-loaded img {
+  opacity: 1;
+  transform: none;
+}
+
+@keyframes shimmer {
+  from { background-position: 100% 0; }
+  to   { background-position: -100% 0; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .lazy-frame { animation: none; }
+  .lazy-frame img, .scroll-badge, .faq-item { transition: none; }
+}

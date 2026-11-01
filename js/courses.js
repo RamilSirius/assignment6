@@ -6,6 +6,9 @@
    2. Catalogue     -> cards built in a loop, filtered by level and duration
    3. Rating        -> clickable stars, summary in the sidebar
    4. Enrolment     -> multi-step form with Next / Back
+
+   Assignment #6: a toast after each rating, a loading spinner on
+   "Confirm enrolment". The search box is in js/search.js.
    ========================================================================== */
 
 
@@ -265,6 +268,7 @@ function setUpRating(card, course) {
       star.style.transform = 'scale(1.5) rotate(-15deg)';
       setTimeout(() => { star.style.transform = ''; }, 180);
       playSound('star');
+      showToast(`You rated "${course.title}" ${course.rating} of ${MAX_STARS} stars.`, 'info');   // Assignment #6
     });
   });
 
@@ -403,13 +407,20 @@ enrolForm.addEventListener('submit', (event) => {
     goToNextStep();         // Enter inside a field on steps 1–3 works like "Next"
     return;
   }
-  const course = courses.find((item) => item.id === courseSelect.value);
-  enrolSuccess.textContent =
-    `Thank you, ${nameField.value.trim()}! You are enrolled in "${course.title}". ` +
-    `A mentor will write to ${emailField.value.trim()} within 24 hours.`;
-  enrolSuccess.hidden = false;
-  replayAnimation(enrolSuccess, 'pop');
-  playSound('success');
+  // Assignment #6: the button shows a spinner while the "server" answers (js/engagement.js)
+  submitWithSpinner($(enrolForm), () => {
+    const course = courses.find((item) => item.id === courseSelect.value);
+    if (!course) {
+      return;   // the form was cleared while it was "sending"
+    }
+    enrolSuccess.textContent =
+      `Thank you, ${nameField.value.trim()}! You are enrolled in "${course.title}". ` +
+      `A mentor will write to ${emailField.value.trim()} within 24 hours.`;
+    enrolSuccess.hidden = false;
+    replayAnimation(enrolSuccess, 'pop');
+    playSound('success');
+    showToast(`Enrolment confirmed: ${course.title}`, 'success');
+  });
 });
 
 function clearEnrolForm() {

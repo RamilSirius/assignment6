@@ -95,6 +95,7 @@ reserveButton.addEventListener('click', () => {
   replayAnimation(reserveMessage, 'pop');
   renderCohort();
   playSound('success');
+  showToast(`Place #${cohort.takenPlaces} reserved in the 16 November cohort.`, 'success');   // Assignment #6
 });
 
 renderCohort();
