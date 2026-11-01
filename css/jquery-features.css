@@ -183,6 +183,17 @@ html[data-bs-theme="dark"] .scroll-badge {
   cursor: progress;
 }
 
+/* Bootstrap paints disabled buttons in its own blue / yellow; keep our brand colours */
+.btn-primary {
+  --bs-btn-disabled-bg: var(--edu-indigo);
+  --bs-btn-disabled-border-color: var(--edu-indigo);
+}
+
+.btn-warning {
+  --bs-btn-disabled-bg: var(--edu-amber);
+  --bs-btn-disabled-border-color: var(--edu-amber);
+}
+
 
 /* ==========================================================================
    04. TOAST NOTIFICATIONS
